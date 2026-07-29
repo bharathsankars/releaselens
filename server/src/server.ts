@@ -1,6 +1,10 @@
 import type { Server } from "node:http";
 
 import { createApp } from "./app.js";
+import {
+  connectDatabase,
+  disconnectDatabase,
+} from "./config/database.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 
@@ -9,19 +13,32 @@ const app = createApp();
 let server: Server | undefined;
 let isShuttingDown = false;
 
-const startServer = (): void => {
-  server = app.listen(env.PORT, () => {
-    logger.info(
+const startServer = async (): Promise<void> => {
+  try {
+    await connectDatabase();
+
+    server = app.listen(env.PORT, () => {
+      logger.info(
+        {
+          port: env.PORT,
+          environment: env.NODE_ENV,
+        },
+        "ReleaseLens API started",
+      );
+    });
+  } catch (error) {
+    logger.fatal(
       {
-        port: env.PORT,
-        environment: env.NODE_ENV,
+        err: error,
       },
-      "ReleaseLens API started",
+      "Failed to start ReleaseLens API",
     );
-  });
+
+    process.exitCode = 1;
+  }
 };
 
-const shutdown = (signal: NodeJS.Signals): void => {
+const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
   if (isShuttingDown) {
     return;
   }
@@ -35,35 +52,43 @@ const shutdown = (signal: NodeJS.Signals): void => {
     "Starting graceful shutdown",
   );
 
-  if (!server) {
-    process.exitCode = 0;
-    return;
-  }
+  try {
+    if (server) {
+      await new Promise<void>((resolve, reject) => {
+        server?.close((error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-  server.close((error) => {
-    if (error) {
-      logger.error(
-        {
-          err: error,
-        },
-        "Failed to close HTTP server cleanly",
-      );
+          resolve();
+        });
+      });
 
-      process.exitCode = 1;
-      return;
+      logger.info("HTTP server closed");
     }
 
-    logger.info("HTTP server closed");
+    await disconnectDatabase();
+
     process.exitCode = 0;
-  });
+  } catch (error) {
+    logger.error(
+      {
+        err: error,
+      },
+      "Graceful shutdown failed",
+    );
+
+    process.exitCode = 1;
+  }
 };
 
 process.on("SIGINT", () => {
-  shutdown("SIGINT");
+  void shutdown("SIGINT");
 });
 
 process.on("SIGTERM", () => {
-  shutdown("SIGTERM");
+  void shutdown("SIGTERM");
 });
 
-startServer();
+void startServer();
