@@ -1,4 +1,5 @@
 import type { ErrorRequestHandler } from "express";
+import { logger } from "../config/logger.js";
 
 import { env } from "../config/env.js";
 import { AppError } from "../shared/errors/app-error.js";
@@ -46,12 +47,15 @@ export const errorHandlerMiddleware: ErrorRequestHandler = (
   }
 
   if (!appError.isOperational) {
-    console.error("Unhandled application error", {
-      requestId: request.requestId,
-      method: request.method,
-      path: request.originalUrl,
-      error,
-    });
+    logger.error(
+      {
+        requestId: request.requestId,
+        method: request.method,
+        path: request.originalUrl,
+        err: error,
+      },
+      "Unhandled application error",
+    );
   }
 
   response.status(appError.statusCode).json(responseBody);
