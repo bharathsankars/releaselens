@@ -26,3 +26,18 @@ export const createRelease = async (
     requestId: request.requestId,
   });
 };
+
+export const getReleases = async (
+  _request: Request,
+  response: Response,
+): Promise<void> => {
+  const releases = await releaseService.getReleases();
+
+  response.status(200).json({
+    data: releases,
+    meta: {
+      count: releases.length,
+      requestId: response.locals.requestId,
+    },
+  });
+};

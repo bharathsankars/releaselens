@@ -28,4 +28,7 @@ export const releaseService = {
       status: RELEASE_STATUSES.DRAFT,
     });
   },
+  async getReleases(): Promise<Release[]> {
+  return releaseRepository.findAll();
+},
 };
