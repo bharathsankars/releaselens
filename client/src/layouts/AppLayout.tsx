@@ -13,6 +13,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import RocketLaunchOutlinedIcon from "@mui/icons-material/RocketLaunchOutlined";
 import { NavLink, Outlet } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -51,39 +52,55 @@ export const AppLayout = () => {
         <Divider />
 
         <List>
-          <ListItemButton
-            component={NavLink}
-            to="/"
-            end
-            sx={{
-              "&.active": {
-                backgroundColor: "action.selected",
-              },
-            }}
-          >
-            <ListItemIcon>
-              <DashboardOutlinedIcon />
-            </ListItemIcon>
+  <ListItemButton
+    component={NavLink}
+    to="/"
+    end
+    sx={{
+      "&.active": {
+        backgroundColor: "action.selected",
+      },
+    }}
+  >
+    <ListItemIcon>
+      <DashboardOutlinedIcon />
+    </ListItemIcon>
 
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
+    <ListItemText primary="Dashboard" />
+  </ListItemButton>
 
-          <ListItemButton
-            component={NavLink}
-            to="/health"
-            sx={{
-              "&.active": {
-                backgroundColor: "action.selected",
-              },
-            }}
-          >
-            <ListItemIcon>
-              <FavoriteBorderOutlinedIcon />
-            </ListItemIcon>
+  <ListItemButton
+    component={NavLink}
+    to="/releases"
+    sx={{
+      "&.active": {
+        backgroundColor: "action.selected",
+      },
+    }}
+  >
+    <ListItemIcon>
+      <RocketLaunchOutlinedIcon />
+    </ListItemIcon>
 
-            <ListItemText primary="Health" />
-          </ListItemButton>
-        </List>
+    <ListItemText primary="Releases" />
+  </ListItemButton>
+
+  <ListItemButton
+    component={NavLink}
+    to="/health"
+    sx={{
+      "&.active": {
+        backgroundColor: "action.selected",
+      },
+    }}
+  >
+    <ListItemIcon>
+      <FavoriteBorderOutlinedIcon />
+    </ListItemIcon>
+
+    <ListItemText primary="Health" />
+  </ListItemButton>
+</List>
       </Drawer>
 
       <Box
