@@ -1,0 +1,17 @@
+{
+  "name": "releaselens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Engineering release intelligence platform for centralising release readiness, pull requests, deployment status, risks, and approvals.",
+  "scripts": {},
+  "keywords": [
+    "release-management",
+    "engineering-productivity",
+    "react",
+    "typescript",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "Bharath Sankar Sankaramangalam",
+  "license": "MIT"
+}
