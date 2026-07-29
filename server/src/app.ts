@@ -1,14 +1,13 @@
 import cors from "cors";
-import express, { type Express, type Request, type Response } from "express";
+import express, { type Express } from "express";
 import helmet from "helmet";
 
 import { env } from "./config/env.js";
-import { healthSchema } from "./features/health/schemas/health.schema.js";
+import { healthRouter } from "./features/health/health.routes.js";
 import { errorHandlerMiddleware } from "./middleware/error-handler.middleware.js";
 import { loggerMiddleware } from "./middleware/logger.middleware.js";
 import { notFoundMiddleware } from "./middleware/not-found.middleware.js";
 import { requestIdMiddleware } from "./middleware/request-id.middleware.js";
-import { validate } from "./middleware/validation.middleware.js";
 
 export const createApp = (): Express => {
   const app = express();
@@ -26,26 +25,9 @@ export const createApp = (): Express => {
 
   app.use(requestIdMiddleware);
   app.use(loggerMiddleware);
-
   app.use(express.json({ limit: "1mb" }));
 
-  app.get(
-    "/api/v1/health",
-    validate(healthSchema),
-    (request: Request, response: Response) => {
-      response.status(200).json({
-        data: {
-          status: "ok",
-          service: "releaselens-api",
-          environment: env.NODE_ENV,
-          timestamp: new Date().toISOString(),
-        },
-        meta: {
-          requestId: request.requestId,
-        },
-      });
-    },
-  );
+  app.use("/api/v1/health", healthRouter);
 
   app.use(notFoundMiddleware);
   app.use(errorHandlerMiddleware);
