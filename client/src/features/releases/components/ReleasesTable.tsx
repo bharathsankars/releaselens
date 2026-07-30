@@ -9,6 +9,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import type {
   Release,
@@ -70,6 +71,8 @@ const getRiskColour = (
 };
 
 export const ReleasesTable = ({ releases }: ReleasesTableProps) => {
+  const navigate = useNavigate();
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -86,7 +89,16 @@ export const ReleasesTable = ({ releases }: ReleasesTableProps) => {
 
         <TableBody>
           {releases.map((release) => (
-            <TableRow key={release._id} hover>
+            <TableRow
+              key={release._id}
+              hover
+              onClick={() => {
+                navigate(`/releases/${release._id}`);
+              }}
+              sx={{
+                cursor: "pointer",
+              }}
+            >
               <TableCell>
                 <Typography sx={{ fontWeight: 600 }}>
                   {release.name}

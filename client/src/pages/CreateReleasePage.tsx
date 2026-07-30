@@ -93,12 +93,12 @@ export const CreateReleasePage = () => {
     <Stack spacing={3}>
       <Box>
         <Button
-          startIcon={<ArrowBackIcon />}
+          startIcon ={<ArrowBackIcon />}
           onClick={() => {
             navigate("/releases");
           }}
         >
-          Back to Releases
+          Back
         </Button>
 
         <Typography

@@ -5,6 +5,7 @@ import { DashboardPage } from "../pages/DashboardPage";
 import { HealthPage } from "../pages/HealthPage";
 import { ReleasesPage } from "../pages/ReleasesPage";
 import { CreateReleasePage } from "../pages/CreateReleasePage";
+import { ReleaseDetailsPage } from "../pages/ReleaseDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: "releases/new",
         element: <CreateReleasePage />,
+      },
+      {
+        path: "releases/:releaseId",
+        element: <ReleaseDetailsPage />,
       },
     ],
   },
