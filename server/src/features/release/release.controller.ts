@@ -5,6 +5,10 @@ import { sendSuccess } from "../../shared/http/api-response.js";
 import { releaseService } from "./release.service.js";
 import type { CreateReleaseRequest } from "./schemas/create-release.schema.js";
 
+interface ReleaseParams {
+  releaseId: string;
+}
+
 export const createRelease = async (
   request: Request<unknown, unknown, CreateReleaseRequest>,
   response: Response,
@@ -28,7 +32,7 @@ export const createRelease = async (
 };
 
 export const getReleases = async (
-  _request: Request,
+  request: Request,
   response: Response,
 ): Promise<void> => {
   const releases = await releaseService.getReleases();
@@ -37,7 +41,27 @@ export const getReleases = async (
     data: releases,
     meta: {
       count: releases.length,
-      requestId: response.locals.requestId,
+      requestId: request.requestId,
     },
+  });
+};
+
+export const getReleaseById = async (
+  request: Request,
+  response: Response,
+): Promise<void> => {
+  const { releaseId } = request.params as {
+    releaseId: string;
+  };
+
+  const release = await releaseService.getReleaseById(
+    new Types.ObjectId(releaseId),
+  );
+
+  sendSuccess({
+    response,
+    statusCode: 200,
+    data: release,
+    requestId: request.requestId,
   });
 };

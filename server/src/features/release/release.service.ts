@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { AppError } from "../../shared/errors/app-error.js";
 
 import { RELEASE_STATUSES } from "./constants/release-status.js";
@@ -31,4 +32,19 @@ export const releaseService = {
   async getReleases(): Promise<Release[]> {
   return releaseRepository.findAll();
 },
+
+async getReleaseById(id: Types.ObjectId): Promise<Release> {
+  const release = await releaseRepository.findById(id);
+
+  if (!release) {
+    throw new AppError({
+      statusCode: 404,
+      code: "RELEASE_NOT_FOUND",
+      message: "Release was not found.",
+    });
+  }
+
+  return release;
+},
+
 };
